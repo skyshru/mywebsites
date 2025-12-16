@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEL DSA Prep Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 25px;
+            background: #f8f9fa;
+            border-bottom: 3px solid #e9ecef;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 15px 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .stat-box .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-box .label {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .table-container {
+            padding: 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        thead th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        thead th:first-child {
+            border-radius: 10px 0 0 10px;
+        }
+
+        thead th:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+
+        tbody tr {
+            background: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        tbody tr:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        tbody tr.completed {
+            background: #d4edda;
+        }
+
+        tbody td {
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tbody td:first-child {
+            border-left: 1px solid #e9ecef;
+            border-radius: 10px 0 0 10px;
+        }
+
+        tbody td:last-child {
+            border-right: 1px solid #e9ecef;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .priority-5 {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .priority-4 {
+            background: #ffa500;
+            color: white;
+        }
+
+        .priority-3 {
+            background: #4ecdc4;
+            color: white;
+        }
+
+        .priority-2 {
+            background: #95e1d3;
+            color: #2c3e50;
+        }
+
+        .topic {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.95em;
+        }
+
+        .subtopic {
+            color: #495057;
+            font-size: 0.9em;
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        input[type="date"] {
+            padding: 8px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            table {
+                font-size: 0.85em;
+            }
+            
+            tbody td, thead th {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 BEL DSA Preparation Tracker</h1>
+            <p>Master Data Structures & Algorithms Step by Step</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="number" id="totalTopics">67</div>
+                <div class="label">Total Topics</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" id="completedTopics">0</div>
+                <div class="label">Completed</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" id="percentComplete">0%</div>
+                <div class="label">Progress</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="dsa-table">
+                <thead>
+                    <tr>
+                        <th>Priority</th>
+                        <th>Main Topic</th>
+                        <th>Sub-Topic</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const data = [
+            { priority: 5, topic: "Graphs", subtopic: "Representation: Matrix / Adjacency List" },
+            { priority: 5, topic: "Graphs", subtopic: "BFS / DFS" },
+            { priority: 5, topic: "Graphs", subtopic: "Dijkstra" },
+            { priority: 5, topic: "Graphs", subtopic: "Bellman-Ford" },
+            { priority: 5, topic: "Graphs", subtopic: "Floyd-Warshall" },
+            { priority: 5, topic: "Graphs", subtopic: "MST – Kruskal" },
+            { priority: 5, topic: "Graphs", subtopic: "MST – Prim" },
+            { priority: 5, topic: "Graphs", subtopic: "Topological Sort" },
+            { priority: 5, topic: "Graphs", subtopic: "Cycle Detection" },
+            { priority: 4, topic: "Time Complexity", subtopic: "Big-O, Big-Ω, Big-Θ" },
+            { priority: 4, topic: "Time Complexity", subtopic: "Best / Worst / Avg Case" },
+            { priority: 4, topic: "Time Complexity", subtopic: "Complexity of Recursion" },
+            { priority: 4, topic: "Time Complexity", subtopic: "Master Theorem" },
+            { priority: 4, topic: "Trees", subtopic: "Binary Tree & BST" },
+            { priority: 4, topic: "Trees", subtopic: "Traversals (pre/in/post/level)" },
+            { priority: 4, topic: "Trees", subtopic: "Height / Depth / Diameter" },
+            { priority: 4, topic: "Trees", subtopic: "Balanced Trees" },
+            { priority: 4, topic: "Trees", subtopic: "AVL Rotations" },
+            { priority: 4, topic: "Trees", subtopic: "B-Tree / B+ Tree basics" },
+            { priority: 3, topic: "Heap", subtopic: "Min / Max Heap" },
+            { priority: 3, topic: "Heap", subtopic: "Heapify" },
+            { priority: 3, topic: "Heap", subtopic: "Heap Operations" },
+            { priority: 3, topic: "Heap", subtopic: "Priority Queue" },
+            { priority: 3, topic: "Heap", subtopic: "Heap Sort" },
+            { priority: 3, topic: "Sorting", subtopic: "Bubble / Selection / Insertion" },
+            { priority: 3, topic: "Sorting", subtopic: "Merge Sort" },
+            { priority: 3, topic: "Sorting", subtopic: "Quick Sort" },
+            { priority: 3, topic: "Sorting", subtopic: "Counting Sort / Radix Sort (overview)" },
+            { priority: 3, topic: "Sorting", subtopic: "Time complexity comparison" },
+            { priority: 3, topic: "Stack / Queue", subtopic: "Stack operations" },
+            { priority: 3, topic: "Stack / Queue", subtopic: "Prefix / Infix / Postfix conversions" },
+            { priority: 3, topic: "Stack / Queue", subtopic: "Expression evaluation" },
+            { priority: 3, topic: "Stack / Queue", subtopic: "Queue & Circular Queue" },
+            { priority: 3, topic: "Stack / Queue", subtopic: "Priority Queue" },
+            { priority: 3, topic: "Stack / Queue", subtopic: "Deque" },
+            { priority: 3, topic: "Stack / Queue", subtopic: "Recursion applications" },
+            { priority: 3, topic: "Linked List", subtopic: "SL / DL / Circular" },
+            { priority: 3, topic: "Linked List", subtopic: "Insert / Delete" },
+            { priority: 3, topic: "Linked List", subtopic: "Floyd's Cycle Detection" },
+            { priority: 3, topic: "Linked List", subtopic: "Reverse Linked List" },
+            { priority: 3, topic: "Linked List", subtopic: "LRU concept" },
+            { priority: 2, topic: "Dynamic Programming", subtopic: "Fibonacci DP" },
+            { priority: 2, topic: "Dynamic Programming", subtopic: "LCS" },
+            { priority: 2, topic: "Dynamic Programming", subtopic: "LIS" },
+            { priority: 2, topic: "Dynamic Programming", subtopic: "0/1 Knapsack" },
+            { priority: 2, topic: "Dynamic Programming", subtopic: "Matrix Chain Multiplication" },
+            { priority: 2, topic: "Dynamic Programming", subtopic: "Coin Change" },
+            { priority: 2, topic: "Greedy", subtopic: "Activity Selection" },
+            { priority: 2, topic: "Greedy", subtopic: "Fractional Knapsack" },
+            { priority: 2, topic: "Greedy", subtopic: "Huffman Coding" },
+            { priority: 2, topic: "Greedy", subtopic: "Job Sequencing" },
+            { priority: 2, topic: "Backtracking", subtopic: "N-Queens" },
+            { priority: 2, topic: "Backtracking", subtopic: "Rat in a Maze" },
+            { priority: 2, topic: "Backtracking", subtopic: "Sudoku" },
+            { priority: 2, topic: "Backtracking", subtopic: "Subset / Permutations" },
+            { priority: 2, topic: "Recursion", subtopic: "Tail vs Non-Tail" },
+            { priority: 2, topic: "Recursion", subtopic: "Recurrence Relation" },
+            { priority: 2, topic: "Recursion", subtopic: "Stack in recursion" },
+            { priority: 2, topic: "String Algorithms", subtopic: "Naive / KMP / Rabin-Karp" },
+            { priority: 2, topic: "String Algorithms", subtopic: "Z-Algorithm" },
+            { priority: 2, topic: "String Algorithms", subtopic: "Trie Basics" },
+            { priority: 2, topic: "Bit Manipulation", subtopic: "AND / OR / XOR / NOT" },
+            { priority: 2, topic: "Bit Manipulation", subtopic: "Count set bits" },
+            { priority: 2, topic: "Bit Manipulation", subtopic: "Check power of 2" },
+            { priority: 2, topic: "Bit Manipulation", subtopic: "Swap using XOR" }
+        ];
+
+        const tableBody = document.getElementById('tableBody');
+        
+        function loadData() {
+            const saved = {};
+            data.forEach((_, i) => {
+                const checked = localStorage.getItem(`task_${i}_checked`) === 'true';
+                const date = localStorage.getItem(`task_${i}_date`) || '';
+                saved[i] = { checked, date };
+            });
+            return saved;
+        }
+
+        function saveData(index, checked, date) {
+            localStorage.setItem(`task_${index}_checked`, checked);
+            localStorage.setItem(`task_${index}_date`, date);
+            updateStats();
+        }
+
+        function updateStats() {
+            const total = data.length;
+            let completed = 0;
+            
+            data.forEach((_, i) => {
+                if (localStorage.getItem(`task_${i}_checked`) === 'true') {
+                    completed++;
+                }
+            });
+            
+            const percent = Math.round((completed / total) * 100);
+            
+            document.getElementById('totalTopics').textContent = total;
+            document.getElementById('completedTopics').textContent = completed;
+            document.getElementById('percentComplete').textContent = percent + '%';
+            document.getElementById('progressBar').style.width = percent + '%';
+        }
+
+        function renderTable() {
+            const saved = loadData();
+            
+            tableBody.innerHTML = data.map((item, index) => {
+                const isChecked = saved[index]?.checked || false;
+                const savedDate = saved[index]?.date || '';
+                const rowClass = isChecked ? 'completed' : '';
+                
+                return `
+                    <tr class="${rowClass}">
+                        <td><span class="priority priority-${item.priority}">P${item.priority}</span></td>
+                        <td class="topic">${item.topic}</td>
+                        <td class="subtopic">${item.subtopic}</td>
+                        <td>
+                            <input type="checkbox" class="checkbox" 
+                                   data-index="${index}" 
+                                   ${isChecked ? 'checked' : ''}>
+                        </td>
+                        <td>
+                            <input type="date" 
+                                   data-index="${index}" 
+                                   value="${savedDate}"
+                                   ${!isChecked ? 'disabled' : ''}>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.querySelectorAll('.checkbox').forEach(cb => {
+                cb.addEventListener('change', (e) => {
+                    const index = e.target.dataset.index;
+                    const checked = e.target.checked;
+                    const dateInput = document.querySelector(`input[type="date"][data-index="${index}"]`);
+                    
+                    if (checked) {
+                        dateInput.disabled = false;
+                        dateInput.value = new Date().toISOString().split('T')[0];
+                        e.target.closest('tr').classList.add('completed');
+                    } else {
+                        dateInput.disabled = true;
+                        dateInput.value = '';
+                        e.target.closest('tr').classList.remove('completed');
+                    }
+                    
+                    saveData(index, checked, dateInput.value);
+                });
+            });
+
+            document.querySelectorAll('input[type="date"]').forEach(input => {
+                input.addEventListener('change', (e) => {
+                    const index = e.target.dataset.index;
+                    const checkbox = document.querySelector(`.checkbox[data-index="${index}"]`);
+                    saveData(index, checkbox.checked, e.target.value);
+                });
+            });
+
+            updateStats();
+        }
+
+        renderTable();
+    </script>
+</body>
+</html>
